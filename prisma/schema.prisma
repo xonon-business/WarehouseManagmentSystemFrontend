@@ -1,0 +1,31 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  previewFeatures = ["referentialIntegrity"]
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
+
+model User {
+  id String @id @default(cuid())
+  email String @db.VarChar(255)
+  password String
+  // all this should be hashed
+  creditCardNumber String @db.VarChar(12)
+  expDate String
+  cvv Int 
+  address String 
+  // profile info 
+  firstName String
+  lastName String
+  profilePictureUrl String
+  timeCreated DateTime @default(now())
+  timeNow DateTime @updatedAt
+}
