@@ -15,17 +15,17 @@ datasource db {
 
 model User {
   id String @id @default(cuid())
-  email String @db.VarChar(255)
+  email String @unique  @db.VarChar(255)
   password String
   // all this should be hashed
-  creditCardNumber String @db.VarChar(12)
-  expDate String
-  cvv Int 
-  address String 
+  creditCardNumber String? @db.VarChar(12)
+  expDate String?
+  cvv Int?
+  address String?
   // profile info 
   firstName String
   lastName String
-  profilePictureUrl String
+  profilePictureUrl String? @default("")
   timeCreated DateTime @default(now())
   timeNow DateTime @updatedAt
 }

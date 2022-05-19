@@ -1,8 +1,8 @@
-# Commit 1
+# Commit 2
 
-```started implementing prisma but, didn't get to work on pages```
+```finished prisma, added login page, finished auth```
 
 TODO:
-   - Finish Auth
-   - Learn MUI
-   -  Add backend (requires help from Dway / @HeshamD)
+   - Finish Auth {done but with a slight buf}
+   - Learn MUI {eh}
+   - Add backend (requires help from Dway / @HeshamD) {being worked on}
