@@ -12,8 +12,12 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { useCookies } from 'react-cookie'
-import { login } from '../../components/auth/auth'
+import Cookie from 'js-cookie'
+// import bcrypt from 'bcrypt'
+import axios from 'axios'
+import Alert from '@mui/material/Alert';
+import { useRouter } from 'next/router';
+
 
 function Copyright(props: any) {
   return (
@@ -28,15 +32,55 @@ function Copyright(props: any) {
   );
 }
 
+const validateEmail = (email: any, set: Function) => {
+  
+  let re =  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+  let d = re.test(email.toString().toLocaleLowerCase())
+  if (d) {
+    set('')
+    return d
+  } else {
+    console.log(d, ' ', email)
+    set('[Error] Email is not valid')
+    return false
+  }
+};
+
+
+
 
 const theme = createTheme();
 
 export default function SignIn() {
   const [email, setEmail] = React.useState("")
   const [password, setPassword] = React.useState("")
+  const [error, setError] = React.useState("")
+  const router = useRouter()
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    let user 
+    if (email == "" || null || undefined) {
+      setError("[Error] Email field is blank")
+      return
+    }
+    if (!validateEmail(email, setError)) {
+      return
+    }
+    if (password == "" || null || undefined) {
+      setError("[Error] Passoword field is blank")
+      return
+    }
+    let res = await axios.get(`/api/auth/login?email=${email}&password=${password}`)
+    let data = res.data
+    if (data.error) {
+      setError(data.message)
+      return
+    } 
+    else {
+      Cookie.set('authKey', JSON.stringify(data), {
+        expires: 7
+      })
+      router.push('/app')
+    }
   };
 
   return (
@@ -57,7 +101,8 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={async(e: React.FormEvent<HTMLFormElement>) => await handleSubmit(e)} noValidate sx={{ mt: 1 }}>
+          {error && <Alert onClose={() => setError("")} severity="error">{error}</Alert>}
+          <Box component="form" onSubmit={async (e: React.FormEvent<HTMLFormElement>) => handleSubmit(e)} noValidate sx={{ mt: 1 }}>
             <TextField
               onChange={e => setEmail(e.target.value)}
               margin="normal"

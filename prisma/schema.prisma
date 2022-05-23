@@ -1,31 +1,64 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-generator client {
+// generator entityframework {
+//   provider        = "npx prisma-generator-entityframework"
+//   output          = "../../api/WarehouseManagmentSystemAPI.Prisma"
+//   namespace       = "WarehouseManagmentSystemAPI.Prisma"
+//   clientClassName = "PrismaClientCS"
+// }
+
+generator Client {
   previewFeatures = ["referentialIntegrity"]
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
   referentialIntegrity = "prisma"
 }
 
 model User {
-  id String @id @default(cuid())
-  email String @unique  @db.VarChar(255)
-  password String
+  id                String   @id @default(cuid())
+  email             String   @unique @db.VarChar(255)
+  password          String
   // all this should be hashed
-  creditCardNumber String? @db.VarChar(12)
-  expDate String?
-  cvv Int?
-  address String?
-  // profile info 
-  firstName String
-  lastName String
-  profilePictureUrl String? @default("")
-  timeCreated DateTime @default(now())
-  timeNow DateTime @updatedAt
+  creditCardNumber  String?  @db.VarChar(12)
+  expDate           String?
+  cvv               Int?
+  address           String?
+  // profile info
+  firstName         String
+  lastName          String
+  profilePictureUrl String?  @default("")
+  timeCreated       DateTime @default(now())
+  timeNow           DateTime @updatedAt @default(now())
+}
+
+model StockEntity {
+  ProductId       String @id
+  productEntityId String
+}
+
+model ProductEntity {
+  id                 String @id
+  ProductName        String @db.VarChar(60)
+  ProductDescription String
+  SKU                String
+  ProductQTY         Int
+  ReOrderPoint       Int
+  ProductSalePrice   BigInt
+  ProductCostPrice   BigInt
+
+  CategoryEntity   CategoryEntity @relation(fields: [categoryEntityId], references: [id])
+  categoryEntityId String
+  Image            Bytes
+}
+
+model CategoryEntity {
+  id              String          @id
+  CategoryName    String
+  ProductId       String
+  ProductEntities ProductEntity[]
 }

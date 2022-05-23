@@ -2,6 +2,7 @@
   "compilerOptions": {
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
+    "baseUrl": "./",
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -13,8 +14,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "jsx": "preserve",
-    "incremental": true
+    "incremental": true,
+    "paths": {
+      "@components/*": ["/components/*"]
+    }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/auth/auth.ts", "components/auth/prisma.ts", "components/auth/types.ts", "components/auth/user.ts", "prima.js", "utils/userStuff.js"],
   "exclude": ["node_modules"]
 }
