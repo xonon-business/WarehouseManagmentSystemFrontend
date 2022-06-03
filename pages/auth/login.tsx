@@ -11,30 +11,19 @@ import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
+import Backdrop from '@mui/material/Backdrop';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Cookie from 'js-cookie'
 // import bcrypt from 'bcrypt'
 import axios from 'axios'
 import Alert from '@mui/material/Alert';
 import { useRouter } from 'next/router';
+import { CircularProgress } from '@mui/material';
 
-
-function Copyright(props: any) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="http://localhost:3000">
-        Xonon WMS
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const validateEmail = (email: any, set: Function) => {
-  
-  let re =  /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+
+  let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
   let d = re.test(email.toString().toLocaleLowerCase())
   if (d) {
     set('')
@@ -55,26 +44,32 @@ export default function SignIn() {
   const [email, setEmail] = React.useState("")
   const [password, setPassword] = React.useState("")
   const [error, setError] = React.useState("")
+  const [open, setOpen] = React.useState(false);
   const router = useRouter()
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (email == "" || null || undefined) {
       setError("[Error] Email field is blank")
+      setOpen(false)
       return
     }
     if (!validateEmail(email, setError)) {
+      setOpen(false)
       return
     }
     if (password == "" || null || undefined) {
+      setOpen(false)
       setError("[Error] Passoword field is blank")
       return
     }
+    setOpen(true)
     let res = await axios.get(`/api/auth/login?email=${email}&password=${password}`)
     let data = res.data
     if (data.error) {
+      setOpen(false)
       setError(data.message)
       return
-    } 
+    }
     else {
       Cookie.set('authKey', JSON.stringify(data), {
         expires: 7
@@ -87,6 +82,12 @@ export default function SignIn() {
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
+        <Backdrop
+          sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={open}
+        >
+          <CircularProgress color='inherit' />
+        </Backdrop>
         <Box
           sx={{
             marginTop: 8,
@@ -144,14 +145,13 @@ export default function SignIn() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="#" variant="body2">
+                <Link href="/auth/signup" variant="body2">
                   {"Don't have an account? Sign Up"}
                 </Link>
               </Grid>
             </Grid>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );

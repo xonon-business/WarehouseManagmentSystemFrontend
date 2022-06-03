@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import Bcrypt from 'bcrypt'
 import { PrismaClient } from '@prisma/client'
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+let Api =  async (req: NextApiRequest, res: NextApiResponse) => {
   let { query: {
     firstName,
     lastName,
@@ -27,3 +27,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
   
 }
+
+export default Api

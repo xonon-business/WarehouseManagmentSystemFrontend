@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next'
 import Bcrypt from 'bcrypt'
 import { PrismaClient } from '@prisma/client'
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+let Api = async (req: NextApiRequest, res: NextApiResponse) => {
   let { query: {
     email,
     password,
@@ -18,8 +18,10 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
   }
   let passCheck = await Bcrypt.compare(password.toString(), passwordHash)
   if (passCheck) {
-    res.status(200).json({check: passCheck, pass: password, hpass: user?.password })
+    res.status(200).json(user)
   }
   res.status(200).json({ error: 9200, message: `[Error] Password does not match email` })
 
 }
+
+export default Api

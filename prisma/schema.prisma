@@ -1,12 +1,12 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// generator entityframework {
-//   provider        = "npx prisma-generator-entityframework"
-//   output          = "../../api/WarehouseManagmentSystemAPI.Prisma"
-//   namespace       = "WarehouseManagmentSystemAPI.Prisma"
-//   clientClassName = "PrismaClientCS"
-// }
+generator entityframework {
+  provider        = "npx prisma-generator-entityframework"
+  output          = "../../backend/WarehouseManagmentSystemAPI.Prisma"
+  namespace       = "WarehouseManagmentSystemAPI.Prisma"
+  clientClassName = "PrismaClientCS"
+}
 
 generator Client {
   previewFeatures = ["referentialIntegrity"]
@@ -35,6 +35,9 @@ model User {
   timeCreated       DateTime @default(now())
   timeNow           DateTime @updatedAt @default(now())
 }
+
+
+// backend stuff
 
 model StockEntity {
   ProductId       String @id

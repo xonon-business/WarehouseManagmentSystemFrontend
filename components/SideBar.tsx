@@ -1,5 +1,6 @@
 import * as React from 'react';
-import AppBar from '@mui/material/AppBar';
+import MuiAppBar, { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
+import { styled, useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import Divider from '@mui/material/Divider';
@@ -18,8 +19,12 @@ import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import HomeIcon from '@mui/icons-material/Home';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import LogoutIcon from '@mui/icons-material/Logout';
+import AssessmentIcon from '@mui/icons-material/Assessment';
 import { useRouter } from 'next/router';
 import Cookie from 'js-cookie'
+import { CheckRoute } from 'utils/router';
+import { Backdrop, CircularProgress } from '@mui/material';
+import LoadingScreen from './LoadingScreen';
 const drawerWidth = 210;
 
 interface Props {
@@ -32,14 +37,61 @@ interface Props {
   window?: () => Window;
 }
 
+interface AppBarProps extends MuiAppBarProps {
+  open?: boolean;
+}
+
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})<AppBarProps>(({ theme, open }) => ({
+  transition: theme.transitions.create(['margin', 'width'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: `${drawerWidth}px`,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  }),
+}));
+
+function getIns(firstName: any, lastName: any) {
+  if (firstName && lastName) {
+    let fIn = firstName.toString().charAt(0)
+    let lIn = lastName.toString().charAt(0)
+    return `${fIn}${lIn}`.toUpperCase()
+  } else {
+    return '..loading'
+  }
+}
+
 export default function SideBar(props: Props) {
-  const { window } = props;
   let router = useRouter()
+  let [data, setData] = React.useState(Object);
+  React.useEffect(() => {
+    if (props.auth == undefined) {
+      router.push('/auth/login', undefined, { shallow: true })
+    } else {
+      setData(JSON.parse(props.auth))
+      setLoading(false)
+    }
+  }, [props, router])
+
+  const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
-  let data = JSON.parse(props.auth)
+  const [open, setOpen] = React.useState(true)
+  const [loading, setLoading] = React.useState(true)
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
+  const handleDrawer = () => {
+    setOpen(!open)
+  }
+
+  CheckRoute(router, setLoading)
 
   const drawer = (
     <div>
@@ -61,13 +113,18 @@ export default function SideBar(props: Props) {
             color="inherit"
             variant="subtitle1"
           >
-            {data.email}
+            {data.email ? data.email : 'laoding...'}
           </Typography>
           <Typography
             color="neutral.400"
             variant="body2"
           >
-            {data.firstName + ' ' + data.lastName}
+            {data.firstName && data.lastName ? data.firstName + ' ' + data.lastName : 'loading...'}
+          </Typography>
+          <Typography
+            color="neutral.400"
+            variant="body2"
+          >
           </Typography>
         </div>
       </Box>
@@ -75,14 +132,15 @@ export default function SideBar(props: Props) {
         <MuiListItem text="Home" tooltip='' action={() => router.push('/app')} icon={<HomeIcon />} />
         <MuiListItem text="Warehouses" tooltip='' action={() => router.push('/app/warehouse')} icon={<WarehouseIcon />} />
         <MuiListItem text="Products" tooltip='' action={() => router.push('/app/products')} icon={<ShoppingBagIcon />} />
-        <MuiListItem text="Catogories" tooltip='' action={() => router.push('/app/catogory')}  icon={<AppsIcon />} />
+        <MuiListItem text="Catogories" tooltip='' action={() => router.push('/app/catogory')} icon={<AppsIcon />} />
         <MuiListItem text="Invontory" tooltip='' action={() => router.push('/app/invontory')} icon={<Inventory2Icon />} />
+        <MuiListItem text="Reports" tooltip='' action={() => router.push('/app/reports')} icon={<AssessmentIcon />} />
       </List>
       <Divider />
       <List>
         <MuiListItem text="Billing" tooltip='section for managing payments' action={() => router.push('/profile/billing')} icon={<CreditCardIcon />} />
-        <MuiListItem text="Account" tooltip='sections for account settings' action={() => router.push('/profile/account')}   icon={<AccountCircle />} />
-        <MuiListItem text="Logout" tooltip='' action={() => {Cookie.remove('authKey'); router.push('/auth/login')  }} icon={<LogoutIcon />} />
+        <MuiListItem text="Account" tooltip='sections for account settings' action={() => router.push('/profile/account')} icon={<AccountCircle />} />
+        <MuiListItem text="Logout" tooltip='' action={() => { Cookie.remove('authKey'); router.push('/auth/login') }} icon={<LogoutIcon />} />
       </List>
     </div>
   );
@@ -92,14 +150,30 @@ export default function SideBar(props: Props) {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
+      <Backdrop
+          sx={{ color: '#fff', background: '#000000', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+          open={loading}
+        >
+          <CircularProgress color='inherit' />
+        </Backdrop>
       <AppBar
         position="fixed"
+        open={open}
         sx={{
           width: { sm: `calc(100% - ${drawerWidth}px)` },
           ml: { sm: `${drawerWidth}px` },
         }}
       >
         <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawer}
+            edge="start"
+            sx={{ mr: 2, ...(open && { display: 'none' }) }}
+          >
+            <MenuIcon />
+          </IconButton>
           <IconButton
             color="inherit"
             aria-label="open drawer"

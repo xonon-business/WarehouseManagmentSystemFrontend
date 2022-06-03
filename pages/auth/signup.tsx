@@ -15,7 +15,11 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import axios from 'axios'
 import Alert from '@mui/material/Alert';
 import Cookie from 'js-cookie'
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 import { useRouter } from 'next/router';
+import { CheckRoute } from 'utils/router';
+import LoadingScreen from 'components/LoadingScreen';
 
 const validateEmail = (email: any, set: Function) => {
   
@@ -32,20 +36,6 @@ const validateEmail = (email: any, set: Function) => {
 };
 
 
-
-function Copyright(props: any) {
-    return (
-      <Typography variant="body2" color="text.secondary" align="center" {...props}>
-        {'Copyright © '}
-        <Link color="inherit" href="https://mui.com/">
-          Xonon WMS
-        </Link>{' '}
-        {new Date().getFullYear()}
-        {'.'}
-      </Typography>
-    );
-  }
-  
   const theme = createTheme();
   
   export default function SignUp() {
@@ -54,11 +44,13 @@ function Copyright(props: any) {
     const [email, setEmail] = React.useState("")
     const [password, setPassword] = React.useState("")
     const [error, setError] = React.useState("")
+    const [open, setOpen] = React.useState(false);
     let router = useRouter()
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
       event.preventDefault();
       if (email == "" || null || undefined) {
         setError("[Error] Email field is blank")
+        setOpen(false)
         return
       }
       if (!validateEmail(email, setError)) {
@@ -66,19 +58,24 @@ function Copyright(props: any) {
       }
       if (password == "" || null || undefined) {
         setError("[Error] Password field is blank")
+        setOpen(false)
         return
       }
       if (firstName == "" || null || undefined) {
         setError("[Error] First name field is blank")
+        setOpen(false)
         return
       }
       if (email == "" || null || undefined) {
         setError("[Error] Last name field is blank")
+        setOpen(false)
         return
       }
+      setOpen(true)
       let res = await axios.get(`/api/auth/register?email=${email}&password=${password}&firstName=${firstName}&lastName=${lastName}`)
       let data = res.data
       if (data.error) {
+        setOpen(false)
         setError(data.message)
         return
       } else {
@@ -88,11 +85,13 @@ function Copyright(props: any) {
         router.push('/app')
       }
     };
+    CheckRoute(router, setOpen)
   
     return (
       <ThemeProvider theme={theme}>
         <Container component="main" maxWidth="xs">
           <CssBaseline />
+          <LoadingScreen open={open} />
           <Box
             sx={{
               marginTop: 8,
@@ -173,14 +172,13 @@ function Copyright(props: any) {
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link href="/auth/login" variant="body2">
                     Already have an account? Sign in
                   </Link>
                 </Grid>
               </Grid>
             </Box>
           </Box>
-          <Copyright sx={{ mt: 5 }} />
         </Container>
       </ThemeProvider>
     );
