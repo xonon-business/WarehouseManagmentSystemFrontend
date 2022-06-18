@@ -3,7 +3,7 @@ import Header from '../../components/Header'
 import { useEffect, useState } from 'react'
 import Cookie from 'js-cookie'
 import { useRouter } from 'next/router'
-import { CheckRoute } from 'utils/router'
+// import { CheckRoute } from 'utils/router'
 import LoadingScreen from 'components/LoadingScreen'
 
 const Home: NextPage = () => {
@@ -15,11 +15,15 @@ const Home: NextPage = () => {
 			router.push(`/auth/login`, undefined, {shallow: true})
 		}
 	}, [router, cookie])
-	CheckRoute(router, setLoading)
+	// router.events.on('routeChangeStart', () => setLoading(true));
+	// router.events.on('routeChangeComplete', () => setLoading(false));
+	// router.events.on('routeChangeError', () => setLoading(false));
 	return (
 		<>
 			<LoadingScreen open={loading} />
-			<Header pageDescription='this is the dashboard' pageTitle='Dashboard' pageName='Dashbaord' auth={cookie} />
+			<Header pageDescription='this is the dashboard' pageTitle='Dashboard' pageName='Dashbaord' auth={cookie}>
+				<h1>Hello World</h1>
+			</Header>
 		</>
 	)
 }

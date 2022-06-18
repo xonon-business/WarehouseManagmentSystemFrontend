@@ -59,6 +59,7 @@ model ProductEntity {
   Image            Bytes
 }
 
+
 model CategoryEntity {
   id              String          @id
   CategoryName    String

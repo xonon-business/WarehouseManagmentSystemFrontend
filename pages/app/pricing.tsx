@@ -11,7 +11,7 @@ import Button from '@mui/material/Button';
 import Link from '@mui/material/Link';
 import Switch from '@mui/material/Switch';
 import Header from '../../components/Header';
-import { CheckRoute } from '../../utils/router' 
+// import { CheckRoute } from '../../utils/router' 
 
 export default function Pricing(props: any) {
   const content = {

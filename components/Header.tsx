@@ -6,12 +6,13 @@ interface Props {
     pageTitle: string
     pageName: string
     pageDescription: string
+    children: any
 }
 
 export default function Header(props: Props) {
     return (
         <>
-            <SideBar pageName={props.pageName} auth={props.auth} />
+            <SideBar pageName={props.pageName} auth={props.auth} Child={props.children} />
             <Head>
                 <title>WMS - {props.pageTitle}</title>
                 <meta name="description" content={props.pageDescription} />

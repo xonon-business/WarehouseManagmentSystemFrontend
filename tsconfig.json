@@ -16,9 +16,12 @@
     "jsx": "preserve",
     "incremental": true,
     "paths": {
-      "@components/*": ["/components/*"]
+      "@components/*": ["./components/*"],
+      "@pages/*": ["./pages/*"],
+      "@public/*": ["./public/*"],
+      
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/auth/auth.ts", "components/auth/prisma.ts", "components/auth/types.ts", "components/auth/user.ts", "prima.js", "utils/userStuff.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "components/auth/auth.ts", "components/auth/prisma.ts", "components/auth/types.ts", "components/auth/user.ts", "prima.js", "utils/userStuff.js", "utils/router.ts.exit"],
   "exclude": ["node_modules"]
 }

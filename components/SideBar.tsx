@@ -20,9 +20,12 @@ import HomeIcon from '@mui/icons-material/Home';
 import Inventory2Icon from '@mui/icons-material/Inventory2';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AssessmentIcon from '@mui/icons-material/Assessment';
+import ReceiptIcon from '@mui/icons-material/Receipt';
+import PersonPinRoundedIcon from '@mui/icons-material/PersonPinRounded';
+
 import { useRouter } from 'next/router';
 import Cookie from 'js-cookie'
-import { CheckRoute } from 'utils/router';
+// import { CheckRoute } from 'utils/router';
 import { Backdrop, CircularProgress } from '@mui/material';
 import LoadingScreen from './LoadingScreen';
 const drawerWidth = 210;
@@ -34,6 +37,7 @@ interface Props {
    */
   pageName?: string;
   auth: any
+  Child: any
   window?: () => Window;
 }
 
@@ -90,9 +94,9 @@ export default function SideBar(props: Props) {
   const handleDrawer = () => {
     setOpen(!open)
   }
-
-  CheckRoute(router, setLoading)
-
+  // router.events.on('routeChangeStart', () => setLoading(true));
+  // router.events.on('routeChangeComplete', () => setLoading(false));
+  // router.events.on('routeChangeError', () => setLoading(false));
   const drawer = (
     <div>
       {/* <Toolbar /> */}
@@ -132,6 +136,8 @@ export default function SideBar(props: Props) {
         <MuiListItem text="Home" tooltip='' action={() => router.push('/app')} icon={<HomeIcon />} />
         <MuiListItem text="Warehouses" tooltip='' action={() => router.push('/app/warehouse')} icon={<WarehouseIcon />} />
         <MuiListItem text="Products" tooltip='' action={() => router.push('/app/products')} icon={<ShoppingBagIcon />} />
+        <MuiListItem text="Invoices" tooltip='' action={() => router.push('/app/invoices')} icon={<ReceiptIcon />} />
+        <MuiListItem text="Customers" tooltip='' action={() => router.push('/app/customers')} icon={<PersonPinRoundedIcon />} />
         <MuiListItem text="Catogories" tooltip='' action={() => router.push('/app/catogory')} icon={<AppsIcon />} />
         <MuiListItem text="Invontory" tooltip='' action={() => router.push('/app/invontory')} icon={<Inventory2Icon />} />
         <MuiListItem text="Reports" tooltip='' action={() => router.push('/app/reports')} icon={<AssessmentIcon />} />
@@ -226,6 +232,7 @@ export default function SideBar(props: Props) {
         sx={{ flexGrow: 1, p: 3, width: { sm: `calc(100% - ${drawerWidth}px)` } }}
       >
         <Toolbar />
+        {props.Child}
       </Box>
     </Box>
   );

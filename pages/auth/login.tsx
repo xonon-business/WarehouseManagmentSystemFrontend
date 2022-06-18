@@ -78,6 +78,11 @@ export default function SignIn() {
     }
   };
 
+  React.useEffect(() => {
+    if (Cookie.get('authKey') != undefined) {
+      router.push('/app')
+    }
+  }, [Cookie])
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -146,7 +151,7 @@ export default function SignIn() {
               </Grid>
               <Grid item>
                 <Link href="/auth/signup" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  Don't have an account? Sign Up
                 </Link>
               </Grid>
             </Grid>

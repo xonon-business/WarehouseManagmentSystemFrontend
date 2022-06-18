@@ -18,7 +18,7 @@ import Cookie from 'js-cookie'
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import { useRouter } from 'next/router';
-import { CheckRoute } from 'utils/router';
+// import { CheckRoute } from 'utils/router';
 import LoadingScreen from 'components/LoadingScreen';
 
 const validateEmail = (email: any, set: Function) => {
@@ -79,14 +79,22 @@ const validateEmail = (email: any, set: Function) => {
         setError(data.message)
         return
       } else {
-        Cookie.set('authKey', JSON.stringify(data), {
+        Cookie.set('authKey', JSON.stringify(data) , {
           expires: 7
         })
         router.push('/app')
       }
     };
-    CheckRoute(router, setOpen)
+    // router.events.on('routeChangeStart', () => setLoading(true));
+    // router.events.on('routeChangeComplete', () => setLoading(false));
+    // router.events.on('routeChangeError', () => setLoading(false));
   
+    React.useEffect(() => {
+      if (Cookie.get('authKey') != undefined) {
+        router.push('/app')
+      }
+    }, [Cookie])
+
     return (
       <ThemeProvider theme={theme}>
         <Container component="main" maxWidth="xs">
