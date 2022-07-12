@@ -143,6 +143,17 @@ export default function SideBar(props: Props) {
         <MuiListItem text="Reports" tooltip='' action={() => router.push('/app/reports')} icon={<AssessmentIcon />} />
       </List>
       <Divider />
+      {/*
+        we need to do
+        Home(for the dashboard)
+        Warehouses
+        Products
+        Catogories
+        Invontory
+        Reports
+        Billing
+        Account
+      */}
       <List>
         <MuiListItem text="Billing" tooltip='section for managing payments' action={() => router.push('/profile/billing')} icon={<CreditCardIcon />} />
         <MuiListItem text="Account" tooltip='sections for account settings' action={() => router.push('/profile/account')} icon={<AccountCircle />} />
